@@ -49,10 +49,14 @@ app.listen(PORT, () => {
 
 app.post("/urls", (request, response) => {
     console.log(request.body);
-    response.send("Ok");
+    const newID = generateRandomString(); 
+    urlDatabase[newID] = request.body.longURL;
+    console.log(urlDatabase);
+    response.redirect("/urls/");
 }); 
 
 function generateRandomString() {
     let ranString = Math.random().toString(36).substring(7)
     console.log(ranString); 
+    return ranString;
 }
