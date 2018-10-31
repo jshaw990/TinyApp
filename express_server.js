@@ -43,10 +43,6 @@ app.get("/u/:shortURL", (req, res) => {
     res.redirect(longURL); 
 });
 
-app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}!`);
-});
-
 app.post("/urls", (req, res) => {
     console.log(req.body);
     const newID = generateRandomString(); 
@@ -55,8 +51,18 @@ app.post("/urls", (req, res) => {
     res.redirect("/urls/");
 }); 
 
+app.post("/urls/:id/delete", (req, res) => {
+    delete urlDatabase[req.params.id];
+    res.redirect("/urls/");
+    console.log("URL Deleted by User");
+});
+
 function generateRandomString() {
     let ranString = Math.random().toString(36).substring(7)
     console.log(ranString); 
     return ranString;
 }
+
+app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}!`);
+});
