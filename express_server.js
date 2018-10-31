@@ -13,46 +13,46 @@ const urlDatabase = {
     "9sm5xK": "http://www.google.com"
 };
 
-app.get("/hello", (request, response) => {
-    response.send("<html><body>Hello <b>World</b></body></html>\n");
+app.get("/hello", (req, res) => {
+    res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-app.get("/", (request, response) => {
-    response.send("Hello!");
+app.get("/", (req, res) => {
+    res.send("Hello!");
 });
 
-app.get("/urls.json", (request, response) => {
-    response.json(urlDatabase);
+app.get("/urls.json", (req, res) => {
+    res.json(urlDatabase);
 }); 
 
-app.get("/urls", (request, response) => {
+app.get("/urls", (req, res) => {
     let templateVars = { urls: urlDatabase };
-    response.render("urls_index", templateVars);
+    res.render("urls_index", templateVars);
 }); 
 
-app.get("/urls/new",(request, response) => {
-    response.render("urls_new");
+app.get("/urls/new",(req, res) => {
+    res.render("urls_new");
 });
 
-app.get("/urls/:id", (request, response) => {
-    let templateVars = { shortURL:request.params.id };
-    response.render("urls_show", templateVars);
+app.get("/urls/:id", (req, res) => {
+    let templateVars = { shortURL:req.params.id };
+    res.render("urls_show", templateVars);
 }); 
 
-app.get("/u/:shortURL", (request, response) => {
-    response.redirect(longURL); 
+app.get("/u/:shortURL", (req, res) => {
+    res.redirect(longURL); 
 });
 
 app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}!`);
 });
 
-app.post("/urls", (request, response) => {
-    console.log(request.body);
+app.post("/urls", (req, res) => {
+    console.log(req.body);
     const newID = generateRandomString(); 
-    urlDatabase[newID] = request.body.longURL;
+    urlDatabase[newID] = req.body.longURL;
     console.log(urlDatabase);
-    response.redirect("/urls/");
+    res.redirect("/urls/");
 }); 
 
 function generateRandomString() {
