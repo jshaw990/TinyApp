@@ -4,12 +4,19 @@
     <title>TinyApp</title>
 </head>
 <body>
+    <% include ./partials/_header %>
+    <h3>
+        URL Database
+    </h3>
     <table>
     <% for (url in urls) { %>
-    <form method="POST" action="/urls/<%= url %>/delete">
+    <form method="GET" action="/urls/<%= url %>">
         <%= url %> - <%= urls[url]%>
+        <input type="submit" value="Edit URL">
+    </form>
+    <form method="POST" action="/urls/<%=url %>/delete">
         <input type="submit" value="Remove URL">
-    </form> <br/>
+    </form><br/>
     <% }; %>
     </table>
 </body>
