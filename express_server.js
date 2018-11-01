@@ -23,6 +23,20 @@ const urlDatabase = {
     "9sm5xK": "http://www.google.com"
 };
 
+// User Database
+const users = {
+    "userRandomID": {
+        id: "userRandomID",
+        email: "user@example.com",
+        password: "purple-monkey-dinosaur"
+    },
+    "user2RandomID": {
+        id: "user2RandomID",
+        email: "user2@example.com",
+        password: "dishwasher-funk"
+    }
+}
+
 //
 app.get("/hello", (req, res) => {
     res.send("<html><body>Hello <b>World</b></body></html>\n");
@@ -76,8 +90,24 @@ app.get("/urls/:id", (req, res) => {
     res.render("urls_show", templateVars);
 });
 
+// Direct to User Registration
+app.get("/urls_registration", (req, res) => {
+    console.log("Attempting to register new user")
+    res.render("urls_registration");
+});
+
+// New User gets added to Database
+app.post("/url/register", (req, res)=> {
+    const id = generateRandomString();
+    const email = req.body.email;
+    const password = req.body.password; 
+    users[id] = {id, email, password};
+    console.log(users); 
+    res.redirect("/urls/");
+});
+
 // Generate random URL for user inputs
-app.post("/urls", (req, res) => {
+app.post("/urls_index", (req, res) => {
     console.log(req.body);
     const newID = generateRandomString(); 
     urlDatabase[newID] = req.body.longURL;
@@ -108,10 +138,11 @@ app.post("/login", (req, res) => {
 app.post("/logout", (req, res) => {
     res.clearCookie("username");
     res.redirect("/urls/");
-
 });
+
+// app.post("")
 
 // Console Startup alert
 app.listen(PORT, () => {
-    console.log(`TinyApp is listening on port ${PORT}!`);
+    console.log(`TinyApp is running on port ${PORT}!`);
 });
