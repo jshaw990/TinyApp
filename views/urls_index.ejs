@@ -1,23 +1,46 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
+    <% include partials/_header %>
     <title>TinyApp</title>
 </head>
 <body>
-    <% include ./partials/_header %>
-    <h3>
-        URL Database
-    </h3>
     <table>
-    <% for (url in urls) { %>
-    <form method="GET" action="/urls/<%= url %>">
-        <%= url %> - <%= urls[url]%>
-        <input type="submit" value="Edit URL">
-    </form>
-    <form method="POST" action="/urls/<%=url %>/delete">
-        <input type="submit" value="Remove URL">
-    </form><br/>
-    <% }; %>
+        <% if (Object.keys(urls).length !== 0) { %>
+        <thead>
+            <tr>
+                <th>Short URL</th>
+                <th>Long URL</th>
+                <th>Edit URL</th>
+                <th>Delete URL</th>
+            </tr>
+        </thead>
+        <% } else { %>
+        <h4>You Have Yet to Create Any TinyURLs.</h4>
+        <% } %>
+        <tbody>
+            <% for (url in urls) { %>
+            <tr>
+                <td>
+                    <a href='/u/<%= urls[url].shortURL %>'><%= urls[url].shortURL %></a>
+                </td>
+                <td>
+                    <%= urls[url].longURL %>
+                </td>
+                <td>
+                    <form method="GET" action="/urls/<%= url %>">
+                        <input type="submit" value="Edit">
+                    </form>
+                </td>
+                <td>
+                    <form method="POST" action="/urls/<%= url %>/delete">
+                        <input type="submit" value="Delete">
+                    </form>
+                </td>
+            </tr>
+            <% } %>
+        </tbody>
     </table>
+    <form method="GET" action="/urls_new"><button>Click here</button></a> to create a TinyURL
 </body>
 </html>
