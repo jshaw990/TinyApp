@@ -5,7 +5,7 @@
 This project is designed to take a user inputed URL in long form and return a shortened, random, URL similar to bit.ly
 
 ## Usage
-- Run <NPM Run> in your Terminal
+- Run " NPM Run " in your Terminal
 - Navigate to <localhost:8080/urls_registration> and press the login/register button   along the top. 
 - You will then be able to submit long URLs and receive shortened ones
 
