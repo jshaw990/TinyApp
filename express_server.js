@@ -1,10 +1,10 @@
 // Required Modules/Middleware
 const express = require("express"); 
-const app = express();
-const PORT = 8080; 
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const bcrypt = require ("bcrypt"); 
+const app = express();
+const PORT = 8080; 
 app.use(bodyParser.urlencoded({extended: true})); 
 app.use(cookieSession ({
     name: 'session',
@@ -12,15 +12,13 @@ app.use(cookieSession ({
     maxAge: 24 * 600 * 60 * 1000
 })); 
 
-
 app.set("view engine", "ejs");
 
 // URL String generator
 function generateRandomString() {
-    let ranString = Math.random().toString(36).substring(7)
-    console.log(ranString); 
+    let ranString = Math.random().toString(36).substring(7) 
     return ranString;
-}
+};
 
 // Users URL Database
 function usersURL (user_id) {
@@ -32,7 +30,7 @@ function usersURL (user_id) {
         }
     }
     return filter;
-}
+};
 
 // URL Database
 const urlDatabase = {
@@ -60,7 +58,7 @@ const users = {
         email: "user2@example.com",
         password: "dishwasher-funk"
     }
-}
+};
 
 // Hello Message
 app.get("/hello", (req, res) => {
@@ -98,8 +96,17 @@ app.get("/urls", (req, res) => {
     }
 }); 
 
+app.get("/u/:id", (req, res) => {
+    let shortURL = req.params.id;
+    if (urlDatabase[shortURL]) {
+        res.redirect(urlDatabase[shortURL].longURL);
+    } else {
+        res.status(400).send("ERROR: Invalid URL")
+    }
+});
+
 // Page to add URLs to Database
-app.get("/urls_new",(req, res) => {
+app.get("/urls/new",(req, res) => {
     id = req.session.user_id;
     user = users; 
     let templatevars= { urls: urlDatabase, user: users, userID: req.session.userID, email: app.locals.email };
@@ -128,9 +135,9 @@ app.get("/urls/:id", (req, res) => {
 }); 
 
 // Direct to User Registration
-app.get("/urls_registration", (req, res) => {
+app.get("/register", (req, res) => {
     if (req.session.userID) {
-        res.redirect("/urls_login");
+        res.redirect("/login");
     } else { 
         res.render('urls_registration', {userID: null})
     };
@@ -143,36 +150,32 @@ app.get("/login", (req, res) => {
     } else { 
         res.render("urls_login", { 
             userID: req.session.userID, 
-            email: users[req.session.userID].email
+            email: app.locals.email
         });
     }
 });
 
 // New User gets added to Database
-app.post("/url/register", (req, res)=> {
+app.post("/register", (req, res)=> {
     const email = req.body.email;
     const password = bcrypt.hashSync(req.body.password, 10); 
     for (user in users) {
-    if (email == "" || password == "") {
-        console.log("ERROR: One or more fields are invalid");
-        // alert();
+    if (!req.body.email || !req.body.password) {
         res.status(400).send("ERROR: One or more fields are invalid");
         return false;
     }
     if (users[user].email == email) {
-        console.log("ERROR: Email already registered");
         res.status(400).send("ERROR: Email already registered. Please login to access your account.");
         return false;
     }}
     const id = generateRandomString();
     users[id] = {id, email, password};
-    console.log(users); 
     req.session.userID = id; 
     res.redirect("/urls");
 });
 
 // Generate random URL for user inputs
-app.post("/urls_new", (req, res) => {
+app.post("/urls/new", (req, res) => {
     if (req.session.userID) {
         let ranString = generateRandomString();
         urlDatabase[ranString] = {
@@ -191,7 +194,6 @@ app.post("/urls_new", (req, res) => {
 app.post("/urls/:id/delete", (req, res) => {
     if (req.session.userID) { 
         delete urlDatabase[req.params.id];
-        console.log(urlDatabase);
         res.redirect("/urls");
     } else { 
         res.status(400).send("ERROR: You must be logged in to access the URL Database.")
@@ -230,15 +232,12 @@ app.post("/login", (req, res) => {
         return false;
     }
     for (user in users) {
-        console.log('user', users[user].email == email)
         if (users[user].email == email) {
             pair = user;
         }
         if (users[pair] && bcrypt.compareSync(passw0rd, users[user].password)) {
             req.session.userID = users[user].id;
             res.redirect("/urls");
-            console.log(email + " has signed in");
-            console.log(req.session.userID);
             return;
         }
     }

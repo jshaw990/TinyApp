@@ -6,9 +6,9 @@
 </head>
 <body>
   <% if (userID) { %>
-  <form action="/urls_new" method="POST">
+  <form action="/urls/new" method="POST">
     <label for="longURL">Long URL</label>
-    <input id="longURL" type="text" name="longURL" placeholder="http://">
+    <input id="longURL" type="url" name="longURL" placeholder="http://">
     <input type="submit" value="Shorten">
   </form>
   <% } else { %>
